@@ -112,7 +112,7 @@ jobs:
         
             echo "docker pull $line"
             # 进到目录 docker build -t $line .
-            image=$(echo "$line" | awk '{print $NF}') 
+            image=$(echo "$line" | awk '{print $NF}'):$tag 
             cd dockerfile/$line && docker build -t $image .
             
             echo "image: $image"
