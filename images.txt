@@ -1,2 +1,1 @@
-eclipse-temurin:8u432-b06-jdk-ubi9-minimal
-cimg/openjdk:8.0.432
+eclipse-temurin:8u432-b06-jdk-foca
