@@ -68,7 +68,10 @@ jobs:
         # Initialize the length counter
         LENGTH=0
         echo images:  ${{ steps.yaml.outputs['images'] }}
-        echo images.0.image: ${{ steps.yaml.outputs['images.0.image'] }}
+        echo images.0.image: ${{ steps.yaml.outputs['images.0'] }}
+        echo images.0.image: ${{ steps.yaml.outputs['images.0'] != null }}
+        echo images.0.image: ${{ steps.yaml.outputs['images.1'] != null }}
+        echo images.0.image: ${{ steps.yaml.outputs['images.2'] != null }}
         # Loop through the array and count elements
         for item in "${{ steps.yaml.outputs['images'] }}"; do
           LENGTH=$((LENGTH + 1))
