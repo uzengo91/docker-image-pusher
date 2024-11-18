@@ -23,7 +23,7 @@ https://cr.console.aliyun.com/<br>
 用户名（**ALIYUN_REGISTRY_USER**)<br>
 密码（**ALIYUN_REGISTRY_PASSWORD**)<br>
 仓库地址（**ALIYUN_REGISTRY**）<br>
-
+仓库地址前缀（**ALIYUN_REGISTRY_BASE_PATH**）<br>
 ![](/doc/用户名密码.png)
 
 
