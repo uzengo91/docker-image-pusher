@@ -82,10 +82,10 @@ jobs:
           size=$((size+1))
         done
 
-        echo "Array length is: $LENGTH"
+        echo "Array length is: $size"
         
         # Set output variable for length
-        echo "::set-output name=length::$LENGTH"
+        echo "::set-output name=length::$size"
 
     - name: Use the array length
       run: |
