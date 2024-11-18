@@ -56,81 +56,106 @@ jobs:
     - name: Docker Setup Buildx
       uses: docker/setup-buildx-action@v3
 
-    - name: Build and push image Aliyun
-      run: |
-        docker login -u $ALIYUN_REGISTRY_USER -p $ALIYUN_REGISTRY_PASSWORD $ALIYUN_REGISTRY
-        # 数据预处理,判断镜像是否重名
-        declare -A duplicate_images
-        declare -A temp_map
-        
-        
-        while IFS= read -r line || [ -n "$line" ]; do
-            # 忽略空行与注释
-            [[ -z "$line" ]] && continue
-            if echo "$line" | grep -q '^\s*#'; then
-                continue
-            fi
-        
-            echo "docker pull $line"
-            docker pull $line
-           
-            image=$(echo "$line" | awk '{print $NF}')
-            echo "image: $image"
-        
-            new_image="$ALIYUN_REGISTRY/$ALIYUN_NAME_SPACE/$ALIYUN_REGISTRY_BASE_PATH/$image"
-            echo "docker tag $image $new_image"
-            docker tag $image $new_image
-            echo "docker push $new_image"
-            docker push $new_image
-            echo "开始清理磁盘空间"
-            echo "=============================================================================="
-            df -hT
-            echo "=============================================================================="
-            docker rmi $image
-            docker rmi $new_image
-            echo "磁盘空间清理完毕"
-            echo "=============================================================================="
-            df -hT
-            echo "=============================================================================="     
-            
-        done < images.txt
+    - name: read-yaml-file
+      uses: pietrobolcato/action-read-yaml@1.1.0
+      id: yaml
+      with:
+        config: ${{ github.workspace }}/build.yaml
 
-    - name: Build docker file push image Aliyun
+    - name: Calculate array length using loop
+      id: loop_length
       run: |
-        docker login -u $ALIYUN_REGISTRY_USER -p $ALIYUN_REGISTRY_PASSWORD $ALIYUN_REGISTRY
-        tag=$(date "+%Y%m%d%H%M%S") 
-        #4位随机数
-        rand=$(cat /proc/sys/kernel/random/uuid | cut -b 1-4)
-        tag=$tag-$rand
+        # Initialize the length counter
+        LENGTH=0
         
-        while IFS= read -r line || [ -n "$line" ]; do
-            # 忽略空行与注释
-            [[ -z "$line" ]] && continue
-            if echo "$line" | grep -q '^\s*#'; then
-                continue
-            fi
+        # Loop through the array and count elements
+        for item in "${{ steps.yaml.outputs['images'] }}"; do
+          LENGTH=$((LENGTH + 1))
+        done
+
+        echo "Array length is: $LENGTH"
         
-            echo "docker pull $line"
-            # 进到目录 docker build -t $line .
-            image=$(echo "$line" | awk '{print $NF}'):$tag 
-            cd dockerfile/$line && docker build -t $image .
-            
-            echo "image: $image"
-        
-            new_image="$ALIYUN_REGISTRY/$ALIYUN_NAME_SPACE/$ALIYUN_REGISTRY_BASE_PATH/$image"
-            echo "docker tag $image $new_image"
-            docker tag $image $new_image
-            echo "docker push $new_image"
-            docker push $new_image
-            echo "开始清理磁盘空间"
-            echo "=============================================================================="
-            df -hT
-            echo "=============================================================================="
-            docker rmi $image
-            docker rmi $new_image
-            echo "磁盘空间清理完毕"
-            echo "=============================================================================="
-            df -hT
-            echo "=============================================================================="     
-        
-        done < dockerfile.txt
+        # Set output variable for length
+        echo "::set-output name=length::$LENGTH"
+
+    - name: Use the array length
+      run: |
+        echo "The length of the array is ${{ steps.loop_length.outputs.length }}"
+#    - name: Build and push image Aliyun
+#      run: |
+#        docker login -u $ALIYUN_REGISTRY_USER -p $ALIYUN_REGISTRY_PASSWORD $ALIYUN_REGISTRY
+#        # 数据预处理,判断镜像是否重名
+#        declare -A duplicate_images
+#        declare -A temp_map
+#
+#
+#        while IFS= read -r line || [ -n "$line" ]; do
+#            # 忽略空行与注释
+#            [[ -z "$line" ]] && continue
+#            if echo "$line" | grep -q '^\s*#'; then
+#                continue
+#            fi
+#
+#            echo "docker pull $line"
+#            docker pull $line
+#
+#            image=$(echo "$line" | awk '{print $NF}')
+#            echo "image: $image"
+#
+#            new_image="$ALIYUN_REGISTRY/$ALIYUN_NAME_SPACE/$ALIYUN_REGISTRY_BASE_PATH/$image"
+#            echo "docker tag $image $new_image"
+#            docker tag $image $new_image
+#            echo "docker push $new_image"
+#            docker push $new_image
+#            echo "开始清理磁盘空间"
+#            echo "=============================================================================="
+#            df -hT
+#            echo "=============================================================================="
+#            docker rmi $image
+#            docker rmi $new_image
+#            echo "磁盘空间清理完毕"
+#            echo "=============================================================================="
+#            df -hT
+#            echo "=============================================================================="
+#
+#        done < images.txt
+#
+#    - name: Build docker file push image Aliyun
+#      run: |
+#        docker login -u $ALIYUN_REGISTRY_USER -p $ALIYUN_REGISTRY_PASSWORD $ALIYUN_REGISTRY
+#        tag=$(date "+%Y%m%d%H%M%S")
+#        #4位随机数
+#        rand=$(cat /proc/sys/kernel/random/uuid | cut -b 1-4)
+#        tag=$tag-$rand
+#
+#        while IFS= read -r line || [ -n "$line" ]; do
+#            # 忽略空行与注释
+#            [[ -z "$line" ]] && continue
+#            if echo "$line" | grep -q '^\s*#'; then
+#                continue
+#            fi
+#
+#            echo "docker pull $line"
+#            # 进到目录 docker build -t $line .
+#            image=$(echo "$line" | awk '{print $NF}'):$tag
+#            cd dockerfile/$line && docker build -t $image .
+#
+#            echo "image: $image"
+#
+#            new_image="$ALIYUN_REGISTRY/$ALIYUN_NAME_SPACE/$ALIYUN_REGISTRY_BASE_PATH/$image"
+#            echo "docker tag $image $new_image"
+#            docker tag $image $new_image
+#            echo "docker push $new_image"
+#            docker push $new_image
+#            echo "开始清理磁盘空间"
+#            echo "=============================================================================="
+#            df -hT
+#            echo "=============================================================================="
+#            docker rmi $image
+#            docker rmi $new_image
+#            echo "磁盘空间清理完毕"
+#            echo "=============================================================================="
+#            df -hT
+#            echo "=============================================================================="
+#
+#        done < dockerfile.txt

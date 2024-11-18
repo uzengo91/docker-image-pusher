@@ -1,0 +1,17 @@
+images:
+  - image: gcr.io/cloud-builders/docker
+    platform: linux/amd64
+    enabled: true
+    pushName: gcr.io/$PROJECT_ID/$REPO_NAME
+  - image: gcr.io/cloud-builders/docker
+    platform: linux/amd64
+    enabled: true
+    pushName: gcr.io/$PROJECT_ID/$REPO_NAME
+
+dockerFiles:
+  - folder: jdk-ffmpeg
+    enabled: true
+    pushName: 111
+  - folder: jdk-ffmpeg
+    enabled: true
+    pushName: 111
