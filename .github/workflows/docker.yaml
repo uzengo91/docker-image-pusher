@@ -72,20 +72,20 @@ jobs:
 #        echo images.0.image: ${{ steps.yaml.outputs['images.1.image'] != null }}
 #        echo images.0.image: ${{ steps.yaml.outputs['images.2.image'] != null }}
         # Loop through the array and count elements
-        size = 0
         while true
         do
-          name="myEnv_images_${size}_image"
+          name="myEnv_images_${LENGTH}_image"
           if [ -z "$(eval "echo \${$name}")" ]; then
               break
           fi
-          size=$((size+1))
+          LENGTH=$((LENGTH+1))
         done
 
-        echo "Array length is: $size"
+
+#        echo "Array length is: $LENGTH"
         
         # Set output variable for length
-        echo "::set-output name=length::$size"
+        echo "::set-output name=length::$LENGTH"
 
     - name: Use the array length
       run: |
