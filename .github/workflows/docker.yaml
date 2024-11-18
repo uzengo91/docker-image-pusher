@@ -62,9 +62,25 @@ jobs:
       with:
         config: ${{ github.workspace }}/build.yaml
         env-var-prefix: "myEnv"
-#    - name: Calculate array length using loop
-#      id: loop_length
-#      run: |
+
+    - name: Calculate array length using loop
+      id: loop_length
+      run: |
+        echo first permission name: ${{ steps.permissions.outputs['0.name'] }}
+        echo first permission permissions: ${{ steps.permissions.outputs['0.permission'] }}
+        echo second permission name: ${{ steps.permissions.outputs['1.name'] }}
+        echo second permission permissions: ${{ steps.permissions.outputs['1.permission'] }}
+        echo
+        env | grep "myEnv_"
+        echo
+        for i in 0 1
+        do
+          name="myEnv_${i}_name"
+          permission="myEnv_${i}_permission"
+          echo first permission name: $(eval "echo \${$name}")
+          echo first permission permissions: $(eval "echo \${$permission}")
+
+        done
 #        # Initialize the length counter
 #        LENGTH=0
 #        # Loop through the array and count elements
@@ -76,12 +92,12 @@ jobs:
 #          fi
 #          LENGTH=$((LENGTH+1))
 #        done
-#
-#
-##        echo "Array length is: $LENGTH"
-#
-#        # Set output variable for length
-#        echo "::set-output name=length::$LENGTH"
+
+
+#        echo "Array length is: $LENGTH"
+
+        # Set output variable for length
+        echo "::set-output name=length::$LENGTH"
 #
 #    - name: Use the array length
 #      run: |
