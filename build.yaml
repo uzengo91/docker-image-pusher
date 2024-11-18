@@ -1,12 +1,12 @@
 images:
-  - image: gcr.io/cloud-builders/docker
+  - image: nginx:latest
+    platform: linux/amd64
+    enabled: false
+    pushName: gcr.io/$PROJECT_ID/$REPO_NAME
+  - image: eclipse-temurin:8u432-b06-jdk-focal
     platform: linux/amd64
     enabled: true
-    pushName: gcr.io/$PROJECT_ID/$REPO_NAME
-  - image: gcr.io/cloud-builders/docker
-    platform: linux/amd64
-    enabled: true
-    pushName: gcr.io/$PROJECT_ID/$REPO_NAME
+    pushName: eclipse-temurin:8u432-b06-jdk-focal2
 
 dockerFiles:
   - folder: jdk-ffmpeg
