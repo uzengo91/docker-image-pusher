@@ -11,7 +11,7 @@ images:
 dockerFiles:
   - folderPath: jdk-ffmpeg2
     enabled: false
-    pushName: 111
+    pushName: "" #空字符串表示 使用 $image:$date-$rand[4] 作为tag
   - folderPath: jdk-ffmpeg
     enabled: true
-    pushName: 
+    pushName: ""
