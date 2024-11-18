@@ -9,9 +9,9 @@ images:
     pushName: eclipse-temurin:8u432-b06-jdk-focal2
 
 dockerFiles:
-  - folder: jdk-ffmpeg
-    enabled: true
+  - folderPath: jdk-ffmpeg2
+    enabled: false
     pushName: 111
-  - folder: jdk-ffmpeg
+  - folderPath: jdk-ffmpeg
     enabled: true
-    pushName: 111
+    pushName: 

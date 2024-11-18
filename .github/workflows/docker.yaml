@@ -63,6 +63,61 @@ jobs:
         file-path: ${{ github.workspace }}/build.yaml
         export-env-variables: 'true'
 
+    - name: dockerfile build and push
+      id: dockerfile-build-push
+      run: |
+        echo "dockerfile-build-push start"
+        echo "==================================================="
+        docker login -u $ALIYUN_REGISTRY_USER -p $ALIYUN_REGISTRY_PASSWORD $ALIYUN_REGISTRY
+        LENGTH=0
+        while true
+        do
+          name="dockerFiles__${LENGTH}__folderPath"
+          if [ -z "$(eval "echo \${$name}")" ]; then
+            break
+          fi
+          image=$(eval "echo \${$name}")
+          enable="dockerFiles__${LENGTH}__enabled"
+          if [ "$(eval "echo \${$enable}")" == "false" ]; then
+            echo "folderPath $image dockerfile is disabled"
+            LENGTH=$((LENGTH+1))
+            continue
+          fi
+          echo "folderPath: $image"
+          pushName="dockerFiles__${LENGTH}__pushName"
+          pushTag=$(eval "echo \${$pushName}")
+          echo "pushName: $pushTag"
+          # 不存在tag 或者tag为空
+          if [ -z "$pushTag" ]; then
+            pushTag=$(date "+%Y%m%d%H%M%S")
+            #4位随机数
+            rand=$(cat /proc/sys/kernel/random/uuid | cut -b 1-4)
+            pushTag=$image:$pushTag-$rand
+          fi
+          cd dockerfile/$folderPath && docker build -t $image .
+
+          new_image="$ALIYUN_REGISTRY/$ALIYUN_NAME_SPACE/$ALIYUN_REGISTRY_BASE_PATH/$pushTag"
+          echo "docker tag $image $new_image"
+          docker tag $image $new_image
+          echo "docker push $new_image"
+          docker push $new_image
+          echo "开始清理磁盘空间"
+          echo "=============================================================================="
+          df -hT
+          echo "=============================================================================="
+          docker rmi $image
+          docker rmi $new_image
+          echo "磁盘空间清理完毕"
+          echo "=============================================================================="
+          df -hT
+          echo "=============================================================================="
+        
+          LENGTH=$((LENGTH+1))
+        done
+        
+        echo "image-build-push end"
+        echo "==================================================="
+
     - name: images build and push
       id: image-build-push
       run: |
@@ -114,42 +169,7 @@ jobs:
         
         echo "image-build-push end"
         echo "==================================================="
-#        echo first permission name: ${{ steps.permissions.outputs['0.name'] }}
-#        echo first permission permissions: ${{ steps.permissions.outputs['0.permission'] }}
-#        echo second permission name: ${{ steps.permissions.outputs['1.name'] }}
-#        echo second permission permissions: ${{ steps.permissions.outputs['1.permission'] }}
-#        echo
-#        env | grep "myEnv_"
-#        echo
-#        for i in 0 1
-#        do
-#          name="myEnv_${i}_name"
-#          permission="myEnv_${i}_permission"
-#          echo first permission name: $(eval "echo \${$name}")
-#          echo first permission permissions: $(eval "echo \${$permission}")
-#
-#        done
-#        # Initialize the length counter
-#        LENGTH=0
-#        # Loop through the array and count elements
-#        while true
-#        do
-#          name="myEnv_images_${LENGTH}_image"
-#          if [ -z "$(eval "echo \${$name}")" ]; then
-#              break
-#          fi
-#          LENGTH=$((LENGTH+1))
-#        done
 
-
-#        echo "Array length is: $LENGTH"
-
-        # Set output variable for length
-#        echo "::set-output name=length::$LENGTH"
-#
-#    - name: Use the array length
-#      run: |
-#        echo "The length of the array is ${{ steps.loop_length.outputs.length }}"
 #    - name: Build and push image Aliyun
 #      run: |
 #        docker login -u $ALIYUN_REGISTRY_USER -p $ALIYUN_REGISTRY_PASSWORD $ALIYUN_REGISTRY
