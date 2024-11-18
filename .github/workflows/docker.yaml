@@ -61,34 +61,31 @@ jobs:
       id: yaml
       with:
         config: ${{ github.workspace }}/build.yaml
-
-    - name: Calculate array length using loop
-      id: loop_length
-      run: |
-        # Initialize the length counter
-        LENGTH=0
-#        echo images.0.image: ${{ steps.yaml.outputs['images.0.image'] != null }}
-#        echo images.0.image: ${{ steps.yaml.outputs['images.1.image'] != null }}
-#        echo images.0.image: ${{ steps.yaml.outputs['images.2.image'] != null }}
-        # Loop through the array and count elements
-        while true
-        do
-          name="myEnv_images_${LENGTH}_image"
-          if [ -z "$(eval "echo \${$name}")" ]; then
-              break
-          fi
-          LENGTH=$((LENGTH+1))
-        done
-
-
-#        echo "Array length is: $LENGTH"
-        
-        # Set output variable for length
-        echo "::set-output name=length::$LENGTH"
-
-    - name: Use the array length
-      run: |
-        echo "The length of the array is ${{ steps.loop_length.outputs.length }}"
+        env-var-prefix: "myEnv"
+#    - name: Calculate array length using loop
+#      id: loop_length
+#      run: |
+#        # Initialize the length counter
+#        LENGTH=0
+#        # Loop through the array and count elements
+#        while true
+#        do
+#          name="myEnv_images_${LENGTH}_image"
+#          if [ -z "$(eval "echo \${$name}")" ]; then
+#              break
+#          fi
+#          LENGTH=$((LENGTH+1))
+#        done
+#
+#
+##        echo "Array length is: $LENGTH"
+#
+#        # Set output variable for length
+#        echo "::set-output name=length::$LENGTH"
+#
+#    - name: Use the array length
+#      run: |
+#        echo "The length of the array is ${{ steps.loop_length.outputs.length }}"
 #    - name: Build and push image Aliyun
 #      run: |
 #        docker login -u $ALIYUN_REGISTRY_USER -p $ALIYUN_REGISTRY_PASSWORD $ALIYUN_REGISTRY
