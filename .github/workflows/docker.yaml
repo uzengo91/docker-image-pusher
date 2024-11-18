@@ -86,7 +86,7 @@ jobs:
           echo "folderPath: $image"
           pushName="dockerFiles__${LENGTH}__pushName"
           pushTag=$(eval "echo \${$pushName}")
-          echo "pushName: $pushTag"
+          
           # 不存在tag 或者tag为空
           if [ -z "$pushTag" ]; then
             pushTag=$(date "+%Y%m%d%H%M%S")
@@ -94,7 +94,9 @@ jobs:
             rand=$(cat /proc/sys/kernel/random/uuid | cut -b 1-4)
             pushTag=$image:$pushTag-$rand
           fi
-          cd dockerfile/$folderPath && docker build -t $image .
+          echo "pushName: $pushTag"
+          # 进到目录 docker build -t $line .
+          cd dockerfile/$image && docker build -t $image .
 
           new_image="$ALIYUN_REGISTRY/$ALIYUN_NAME_SPACE/$ALIYUN_REGISTRY_BASE_PATH/$pushTag"
           echo "docker tag $image $new_image"
