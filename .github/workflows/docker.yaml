@@ -68,6 +68,7 @@ jobs:
       run: |
         echo "image-build-push start"
         echo "==================================================="
+        docker login -u $ALIYUN_REGISTRY_USER -p $ALIYUN_REGISTRY_PASSWORD $ALIYUN_REGISTRY
         LENGTH=0
         while true
         do
