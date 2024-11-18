@@ -5,7 +5,7 @@ images:
     pushName: gcr.io/$PROJECT_ID/$REPO_NAME
   - image: eclipse-temurin:8u432-b06-jdk-focal
     platform: linux/amd64
-    enabled: true
+    enabled: false
     pushName: eclipse-temurin:8u432-b06-jdk-focal2
 
 dockerFiles:
@@ -13,5 +13,5 @@ dockerFiles:
     enabled: false
     pushName: "" #空字符串表示 使用 $image:$date-$rand[4] 作为tag
   - folderPath: jdk-ffmpeg
-    enabled: true
+    enabled: false
     pushName: ""
