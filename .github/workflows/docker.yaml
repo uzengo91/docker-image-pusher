@@ -61,7 +61,6 @@ jobs:
       id: yaml
       with:
         config: ${{ github.workspace }}/build.yaml
-        env-var-prefix: "myEnv"
 
     - name: Calculate array length using loop
       id: loop_length
