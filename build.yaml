@@ -7,6 +7,10 @@ images:
     platform: linux/amd64
     enabled: false
     pushName: eclipse-temurin:8u432-b06-jdk-focal2
+  - image: tomcat:9.0.91-jdk8-temurin-focal
+    platform: linux/amd64
+    enabled: true
+    pushName: tomcat:9.0.91-jdk8-temurin-focal
 
 dockerFiles:
   - folderPath: jdk-ffmpeg2
